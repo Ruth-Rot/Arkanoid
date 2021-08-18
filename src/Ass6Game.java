@@ -2,9 +2,7 @@
  * @author 318770609
  */
 
-import animations.FinalScreen;
-import animations.KeyPressStoppableAnimation;
-import animations.StartScreen;
+import animations.*;
 import biuoop.GUI;
 import biuoop.KeyboardSensor;
 import interfaces.LevelInformation;
@@ -12,11 +10,11 @@ import levels.DirectHit;
 import levels.FinalFour;
 import levels.Green3;
 import levels.WideEasy;
-import animations.AnimationRunner;
 import sets.Counter;
 import sets.GameFlow;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,20 +44,27 @@ public class Ass6Game {
         //check if the args contain levels-
         String get = "";
         for (String s : args) {
-            get = get + s;
+            get += s;
         }
         // organize the levels by the input order:
         if (!get.equals(EMPTY_ARGS)) {
             if (args.length > 0) {
                 for (String s : args) {
-                    if (s.equals(DIRECT)) {
-                        levels.add(new DirectHit());
-                    } else if (s.equals(WIDE)) {
-                        levels.add(new WideEasy());
-                    } else if (s.equals(GREEN)) {
-                        levels.add(new Green3());
-                    } else if (s.equals(FINAL)) {
-                        levels.add(new FinalFour());
+                    switch (s){
+                        case DIRECT:
+                            levels.add(new DirectHit());
+                            break;
+                        case  WIDE:
+                            levels.add(new WideEasy()) ;
+                            break;
+                        case GREEN:
+                            levels.add(new Green3());
+                            break;
+                        case FINAL:
+                            levels.add((new FinalFour()));
+                            break;
+                        default:
+                            break;
                     }
                 }
             } else {
@@ -82,18 +87,18 @@ public class Ass6Game {
         Counter score = new Counter();
 
         /*start Screen*/
-        StartScreen start= new StartScreen();
         AnimationRunner r = new AnimationRunner(gui);
-        r.run(new KeyPressStoppableAnimation(keyboardSensor,keyboardSensor.SPACE_KEY, start));
+        r.run(new KeyPressStoppableAnimation(keyboardSensor,keyboardSensor.SPACE_KEY, new StartScreen()));
+
 
 
         //read the highScore :
-        int hS = 0;
+        int hS;
         try {
             highScore = new File("highscore.txt");
             if (!highScore.createNewFile()) {
                 FileInputStream fReader = new FileInputStream(highScore);
-                InputStreamReader iReader = new InputStreamReader(fReader, "UTF8");
+                InputStreamReader iReader = new InputStreamReader(fReader, StandardCharsets.UTF_8);
                 BufferedReader reader = new BufferedReader(iReader);
                 String before = reader.readLine();
                 hS = Integer.parseInt(before);
